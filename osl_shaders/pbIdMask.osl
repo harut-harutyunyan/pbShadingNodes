@@ -1,0 +1,58 @@
+#define Mask 0
+#define ID 1
+#define Disable 2
+
+float difference(color input, color pick, float tolerance)
+{
+    if (pick == (0,0,0))
+    {
+        return 0;
+    }
+    else
+    {
+        color difference = 0;
+        float differenceF = 0;
+        difference=sqrt(pow((pick[0]-input[0]), 2)+pow((pick[1]-input[1]), 2)+pow((pick[2]-input[2]), 2));
+        differenceF = difference[0];
+        differenceF = (differenceF-0)/(tolerance-0);
+        differenceF = mix(0, 1, differenceF);
+        differenceF = 1-differenceF;
+        differenceF = clamp(differenceF, 0, 1);
+        return differenceF;
+    }
+
+}
+
+shader hhIdMask(
+    color input = 0,
+    int Out = 0 [[ string widget = "popup", string options = "Mask|ID|Disable" ]],
+    float tolerance = 1,
+    color pick1 = 0,
+    color pick2 = 0,
+    color pick3 = 0,
+    color pick4 = 0,
+    output color Cout = 0
+
+)
+
+{
+    float tol = tolerance/10;
+    float mask1 = difference(input, pick1, tol);
+    float mask2 = difference(input, pick2, tol);
+    float mask3 = difference(input, pick3, tol);
+    float mask4 = difference(input, pick4, tol);
+    Cout = mask1+mask2+mask3+mask4;
+
+    if (Out == 0)
+    {
+        Cout = mask1+mask2+mask3+mask4;
+    }
+    else if (Out == 1)
+    {
+        Cout = input;
+    }
+    else if (Out == 2)
+    {
+        Cout = 0;
+    }
+}
