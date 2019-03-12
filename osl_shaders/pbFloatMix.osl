@@ -1,0 +1,16 @@
+// mix to values with a mask.
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2018-02-08
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hShaderName(
+    float A = 0.1,
+    float B = 0.5,
+    float Mask = 0,
+    output float ResultF = 0,
+)
+{
+    float safe_mask = clamp(Mask, 0, 1);
+    ResultF = mix(A, B, safe_mask);
+}

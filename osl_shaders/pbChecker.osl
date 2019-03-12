@@ -1,0 +1,25 @@
+// a simple checker pattern.
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2018-02-08
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hChecker(
+  color Color1 = 0,
+  color Color2 = 1,
+  float Scale = 1,
+  point Manifold   = vector(u,v,0),
+  output color Result = 0
+)
+{
+    point p = Manifold / (Scale/10);
+    int x = (int)mod(p[0],2.0);
+    int y = (int)mod(p[1],2.0);
+    int z = (int)mod(p[2],2.0);
+
+    if( ((x%2) ^ (y%2)) == (z%2) ){
+        Result = Color1;
+    } else {
+        Result = Color2;
+    }
+}

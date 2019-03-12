@@ -1,10 +1,16 @@
+// Create masks using ID pass.
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2018-02-08
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
 #define Mask 0
 #define ID 1
 #define Disable 2
 
 float difference(color input, color pick, float tolerance)
 {
-    if (pick == (0,0,0))
+    if (pick == 0)
     {
         return 0;
     }
@@ -23,36 +29,38 @@ float difference(color input, color pick, float tolerance)
 
 }
 
-shader hhIdMask(
-    color input = 0,
+shader hIdMask(
+    color InputID = 0,
     int Out = 0 [[ string widget = "popup", string options = "Mask|ID|Disable" ]],
-    float tolerance = 1,
-    color pick1 = 0,
-    color pick2 = 0,
-    color pick3 = 0,
-    color pick4 = 0,
-    output color Cout = 0
+    float Tolerance = 1,
+    color Pick1 = 0,
+    color Pick2 = 0,
+    color Pick3 = 0,
+    color Pick4 = 0,
+    output color Result = 0,
+    output float ResultF = 0,
 
 )
 
 {
-    float tol = tolerance/10;
-    float mask1 = difference(input, pick1, tol);
-    float mask2 = difference(input, pick2, tol);
-    float mask3 = difference(input, pick3, tol);
-    float mask4 = difference(input, pick4, tol);
-    Cout = mask1+mask2+mask3+mask4;
+    float tol = Tolerance/10;
+    float mask1 = difference(InputID, Pick1, tol);
+    float mask2 = difference(InputID, Pick2, tol);
+    float mask3 = difference(InputID, Pick3, tol);
+    float mask4 = difference(InputID, Pick4, tol);
+    color masks_combined = mask1+mask2+mask3+mask4;
+    ResultF = masks_combined[0];
 
     if (Out == 0)
     {
-        Cout = mask1+mask2+mask3+mask4;
+        Result = masks_combined;
     }
     else if (Out == 1)
     {
-        Cout = input;
+        Result = InputID;
     }
     else if (Out == 2)
     {
-        Cout = 0;
+        Result = 0;
     }
 }

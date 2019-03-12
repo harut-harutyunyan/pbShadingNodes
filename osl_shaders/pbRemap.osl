@@ -1,0 +1,28 @@
+// remap float.
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2018-02-08
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hRemap(
+    float Input = 0,
+    float Mask = 1,
+    float InputMin = 0,
+    float InputMax = 1,
+    float OutputMin = 0,
+    float OutputMax = 1,
+    int Clamp = 0 [[string widget = "boolean" ]],
+    float Contrast = 0,
+    float ContrastPivot = 0.18,
+    output float ResultF = 0,
+    )
+{
+    ResultF = (Input-InputMin)/(InputMax-InputMin);
+    ResultF = mix(OutputMin, OutputMax, ResultF);
+    ResultF = pow((ResultF/ContrastPivot), Contrast)*ContrastPivot;
+    if (Clamp)
+    {
+        ResultF = smoothstep(0, 1, ResultF);
+    }
+    ResultF = mix(Input, ResultF, clamp(Mask, 0, 1));
+}

@@ -1,0 +1,15 @@
+// description here.
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2018-02-08
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hShaderName(
+    color A = 0,
+    color B = 1,
+    float C = 0,
+    output color D = 0,
+)
+{
+    D = mix(A, B, clamp(C, 0, 1));
+}

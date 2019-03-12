@@ -1,0 +1,47 @@
+// Pick one of 10 inputs.
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2018-02-08
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hFloatSwitch(
+    int Index = 0,
+    float Input0 = 0,
+    float Input1 = 0,
+    float Input2 = 0,
+    float Input3 = 0,
+    float Input4 = 0,
+    float Input5 = 0,
+    float Input6 = 0,
+    float Input7 = 0,
+    float Input8 = 0,
+    float Input9 = 0,
+
+    output float ResultF = 0,
+)
+{
+    if (Index < 0)
+    {
+        ResultF = Input0;
+    }
+    else if (Index > 9)
+    {
+        ResultF = Input9;
+    }
+    else
+    {
+        #define OUT(X) if (Index == X) { ResultF = Input##X; } else
+            OUT(0)
+            OUT(1)
+            OUT(2)
+            OUT(3)
+            OUT(4)
+            OUT(5)
+            OUT(6)
+            OUT(7)
+            OUT(8)
+            OUT(9);
+        #undef OUT
+    }
+
+}

@@ -1,0 +1,46 @@
+// remap input.Replicates nukes grade node.
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2018-02-08
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hGrade(
+    color Input = 0,
+    float Mask = 1,
+    float Blackpoint = 0,
+    float Whitepoint = 1,
+    float Lift = 0,
+    float Gain = 1,
+    float Multiply = 1,
+    float Gamma = 1,
+    float OutputMin = 0,
+    float OutputMax = 1,
+    int BlackClamp = 1 [[ string widget = "boolean" ]],
+    int WhiteClamp = 0 [[ string widget = "boolean" ]],
+    output color Result = 0,
+    output float ResultF = 0,
+)
+{
+    // blackpoint-whitepoint
+    Result = (Input-Blackpoint)/(Whitepoint-Blackpoint);
+    // lift-gain
+    Result = (Result*(Gain-Lift))+Lift;
+    // multiply
+    Result = Result*Multiply;
+    // gamma
+    Result = pow(Result, 1/Gamma);
+    // output min-max
+    Result = mix(OutputMin, OutputMax, Result);
+    // clamp
+    if (WhiteClamp)
+    {
+        Result = min(Result, OutputMax);
+    }
+    if (BlackClamp)
+    {
+        Result = max(Result, OutputMin);
+    }
+    // mask
+    Result = mix(Input, Result, clamp(Mask, 0, 1));
+    ResultF = (Result[0]*0.299 + Result[1]*0.587 + Result[2]*0.114);
+}
