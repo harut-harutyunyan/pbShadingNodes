@@ -31,7 +31,7 @@ float difference(color input, color pick, float tolerance)
 
 shader hIdMask(
     color InputID = 0,
-    int Out = 0 [[ string widget = "popup", string options = "Mask|ID|Disable" ]],
+    int Output = 0 [[ string widget = "popup", string options = "Mask|ID|Disable" ]],
     float Tolerance = 1,
     color Pick1 = 0,
     color Pick2 = 0,
@@ -51,15 +51,15 @@ shader hIdMask(
     color masks_combined = mask1+mask2+mask3+mask4;
     ResultF = masks_combined[0];
 
-    if (Out == 0)
+    if (Output == 0)
     {
         Result = masks_combined;
     }
-    else if (Out == 1)
+    else if (Output == 1)
     {
         Result = InputID;
     }
-    else if (Out == 2)
+    else if (Output == 2)
     {
         Result = 0;
     }

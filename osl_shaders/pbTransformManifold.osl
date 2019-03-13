@@ -1,0 +1,19 @@
+// transform coordinate space
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2018-02-08
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hTransformManifold(
+    point Manifold = point(u, v, 0),
+    float Scale = 1,
+    vector Tiling = 1,
+    vector Offset = 0,
+    float  Rotate = 0,
+    point  RotCenter = point(0.5,0.5,0),
+    vector RotAxis   = vector(0.0,0.0,1.0),
+    output point Result = 0,
+)
+{
+    Result = rotate(Manifold - Offset, radians(Rotate), RotCenter, RotCenter + RotAxis) * Tiling / Scale;;
+}
