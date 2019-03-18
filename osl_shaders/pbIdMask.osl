@@ -1,12 +1,10 @@
 // Create masks using ID pass.
 // pbIdMask.osl, by Harut Harutyunyan
-// Modified: 2018-02-08
+// Modified: 2019-03-18
 // gumroad.com/pixelbucket
 // https://github.com/harut-harutyunyan/pbShadingNodes
 
-#define Mask 0
-#define ID 1
-#define Disable 2
+#include "stdosl.h"
 
 float difference(color input, color pick, float tolerance)
 {

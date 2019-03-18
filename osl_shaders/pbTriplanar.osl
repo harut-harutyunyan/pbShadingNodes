@@ -1,0 +1,56 @@
+// triplanar mapper
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-03-18
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+point calc_rotations(point pos, vector rot)
+{
+    point rotX = rotate(pos, (rot[0]/57.2958), point(0.0,0.0,0.0), point(1.0,0.0,0.0));
+    point rotXY = rotate(rotX, (rot[1]/57.2958), point(0.0,0.0,0.0), point(0.0,1.0,0.0));
+    point rotXYZ = rotate(rotXY, (rot[2]/57.2958), point(0.0,0.0,0.0), point(0.0,0.0,1.0));
+    return rotXYZ;
+}
+
+shader hTriplanar(
+string Filename = "" [[ string widget = "filename" ]],
+vector Scale = 1,
+vector Offset = 0,
+vector Rotation = 0,
+int Breakup = 0 [[ string widget = "boolean" ]],
+float BreakupMap = 0.0,
+float BreakupExponent = 1.0,
+vector Manifold = transform("object", P),
+output color Result = color(0),
+)
+{
+
+vector NN = normalize(transform("object", N));
+point PP = (Manifold/Scale+0.001)-Offset;
+point pRotXYZ = calc_rotations(PP, Rotation);
+point nRotXYZ = calc_rotations(NN, Rotation);
+
+float nNx = clamp((1-clamp((1-abs(nRotXYZ[0])) ,0,1)),0,1);
+float nNy = clamp((1-clamp((1-abs(nRotXYZ[1])) ,0,1)),0,1);
+float nNz = clamp((1-clamp((1-abs(nRotXYZ[2])) ,0,1)),0,1);
+float Nx, Ny, Nz;
+
+if ( Breakup == 0 )
+{
+Nx = nNx; Ny = nNy; Nz = nNz;
+}
+else
+{
+float BreakupMap = clamp(BreakupMap,0,1);
+Nx = clamp(pow(nNx*(2*BreakupMap+(nNx*(1-BreakupMap*nNx))), BreakupExponent),0,1);
+Ny = clamp(pow(nNy*(2*BreakupMap+(nNy*(1-BreakupMap*nNy))), BreakupExponent),0,1);
+Nz = clamp(pow(nNz*(2*BreakupMap+(nNz*(1-BreakupMap*nNz))), BreakupExponent),0,1);
+}
+
+color tex_nz = (color) texture(Filename, pRotXYZ[0], pRotXYZ[1], "wrap", "periodic");
+color tex_ny = (color) texture(Filename, pRotXYZ[0], pRotXYZ[2], "wrap", "periodic");
+color tex_nx = (color) texture(Filename, pRotXYZ[1], pRotXYZ[2], "wrap", "periodic");
+
+//layering
+Result = mix(mix(tex_nz, tex_ny, Ny), tex_nx, Nx);
+}

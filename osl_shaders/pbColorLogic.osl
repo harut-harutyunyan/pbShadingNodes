@@ -1,6 +1,6 @@
 // compare A and B colors. returns bool
 // pbIdMask.osl, by Harut Harutyunyan
-// Modified: 2018-02-08
+// Modified: 2019-03-18
 // gumroad.com/pixelbucket
 // https://github.com/harut-harutyunyan/pbShadingNodes
 

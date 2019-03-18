@@ -1,0 +1,41 @@
+// a simple noise function. supports multiple noise types
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-03-18
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hNoise(
+    string NoiseType   = "uperlin" [[ string widget= "popup", string options="perlin|uperlin|cell|hash|simplex|gabor" ]],
+    // float Frequency = 1,
+    int Octaves = 3,
+    float Lacunarity = 1.5,
+    float Gain = 1,
+    float Blackpoint = 0.2,
+    float Whitepoint = 0.8,
+    float Amplitude = 1,
+    point Scale = 1,
+    point Offset = 0,
+    point  Manifold = transform("object", P),
+    output float ResultF = 0,
+)
+{
+    point PP = Manifold/Scale-Offset;
+    float nSum = 0;
+    float nFreq = 1;
+    float nAmp = Amplitude;
+    // Loop over number of octaves
+    for (int i = 0; i < Octaves; i++)
+    {
+        // Compute a noise value
+        float ns = noise(NoiseType, PP * nFreq, i);
+        ns = smoothstep(Blackpoint, Whitepoint, ns);
+        // Add our result to the output
+        ResultF += ns * nAmp;
+        // Add the amplitude to the normalizing sum
+        nSum += nAmp;
+        // Step up frequency and amplitude
+        nFreq *= Lacunarity;
+        nAmp *= Gain;
+    }
+    ResultF /= nSum / Amplitude;
+}
