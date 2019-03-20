@@ -239,7 +239,7 @@ float fractal3DNoiseGenerator(
         return noiseValue;
     }
 
-shader hAlligatorNoise(
+shader hCloud(
     int NoiseType = 0 [[ string widget= "popup", string options="aligator|simplex" ]],
     int Octaves = 4,
     float Lacunarity = 1.8,
