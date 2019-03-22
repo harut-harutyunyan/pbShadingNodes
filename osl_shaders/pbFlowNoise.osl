@@ -1,3 +1,9 @@
+// flow noise
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-03-21
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
 int fastFloor(float x) {
     return (x < 0) ? int(x) - 1 : int(x);
 }
@@ -10,9 +16,7 @@ float lerp(float t, float a, float b) {
     return a + t * (b - a);
 }
 
-/// 3D Perlin flow noise implementation.
-/// Returned values are in the [0, 1] range.
-float perlinFlowNoise3D(point position, float flow) {
+float perlinFlowNoise3D(point p_pos, float flow) {
     int perm[512] = {
         151,160,137,91,90,15,
         131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
@@ -42,10 +46,8 @@ float perlinFlowNoise3D(point position, float flow) {
         138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
     };
 
-    // Gradient component that leads to a vector of length sqrt(2).
-    // float a = sqrt(2)/sqrt(3);
     float a = 0.81649658;
-
+    point position = p_pos;
     vector gradientUBase[16] = {
         vector( 1.0,  0.0,  1.0), vector( 0.0,  1.0,  1.0),
         vector(-1.0,  0.0,  1.0), vector( 0.0, -1.0,  1.0),
@@ -68,7 +70,6 @@ float perlinFlowNoise3D(point position, float flow) {
         vector( 0.0,  1.0, -1.0), vector( 0.0, -1.0, -1.0)
     };
 
-    // Helper function to compute the rotated gradient.
     vector getGradient(int index, float sinTheta, float cosTheta) {
         int safeIndex = index % 16;
         vector gradientU = gradientUBase[safeIndex];
@@ -105,7 +106,6 @@ float perlinFlowNoise3D(point position, float flow) {
     int A = perm[ix    ] + iy, AA = perm[A] + iz, AB = perm[A + 1] + iz;
     int B = perm[ix + 1] + iy, BA = perm[B] + iz, BB = perm[B + 1] + iz;
 
-    // Sine and cosine for the gradient rotation angle
     float sinTheta = 0.0;
     float cosTheta = 0.0;
     sincos(M_2PI * flow, sinTheta, cosTheta);
@@ -120,11 +120,12 @@ float perlinFlowNoise3D(point position, float flow) {
                         lerp(i, gradientDot(perm[AB + 1], sinTheta, cosTheta, fx      , fy - 1.0, fz - 1.0),
                                 gradientDot(perm[BB + 1], sinTheta, cosTheta, fx - 1.0, fy - 1.0, fz - 1.0))));
 
-    // Scale to the [0, 1] range.
     return 0.5 * noiseValue + 0.5;
 }
 
-vector perlinFlowNoise3DGradient(vector position, float flow, float delta) {
+vector perlinFlowNoise3DGradient(vector p_pos, float flow, float delta)
+{
+    point position = p_pos;
     vector result = vector(
         perlinFlowNoise3D(position + vector(delta, 0.0, 0.0), flow) -
         perlinFlowNoise3D(position - vector(delta, 0.0, 0.0), flow),
@@ -139,22 +140,19 @@ vector perlinFlowNoise3DGradient(vector position, float flow, float delta) {
     return result;
 }
 
-/// 3D Fractal Perlin flow noise implementation.
-/// Returned values are in the [-1, 1] range.
 float fractalPerlinFlowNoise3D(
-    point position,
+    point p_pos,
     float flow,
     float lacunarity,
-    float flowRate,
-    float gain,
+    float rough,
     float advect,
     int octaveCount
 ) {
-    float noiseValue = 0.0;
-
+    point position = p_pos;
+    float noiseValue = 0;
     float flowValue = flow;
-
-    float amplitude = 1.0;
+    float flowRate = 1,
+    float amplitude = 1;
     float advectionAmount = advect;
 
     for (int octave = 0; octave < octaveCount; ++octave) {
@@ -167,47 +165,34 @@ float fractalPerlinFlowNoise3D(
 
         position *= lacunarity;
         flowValue *= flowRate;
-        amplitude *= gain;
+        amplitude *= rough;
         advectionAmount *= advect;
     }
 
     return noiseValue;
 }
 
-shader FractalPerlinFlowNoise
-    [[ string description = "Fractal Perlin flow noise" ]]
-(
-    float start_frequency = 1.0
-        [[ string description = "Initial sampling position multiplier that affects the overall granularity." ]],
-    vector start_offset = vector(0.0)
-        [[ string description = "Offsets the initial sampling position effectively shifting the pattern in the specified direction." ]],
+shader hFlowNoise(
+    int Octaves = 4,
+    float Lacunarity = 1.8,
+    float Attenuation = 1,
+    float Roughness = 0.6,
+    float Flow = 1,
+    float Advect = 0.5,
+    point Scale = 1,
+    point Offset =0,
+    point Manifold = transform("object", P),
 
-    float flow = 1.0
-        [[ string description = "The coordinate of a special noise dimension with a period of 1 that naturally evolves the noise to animate it instead of sliding a 3D slice throught the noise space." ]],
+    output float ResultF = 0
+)
+{
+    point PP = (Manifold/Scale) - Offset;
+    float nRough = linearstep(0.1, 0.9, Roughness);
 
-    float lacunarity = 2.0
-        [[ string description = "Position (frequency) multiplier per iteration." ]],
-    float flow_rate = 1.0
-        [[ string description = "Flow coordinate multiplier per iteration." ]],
-    float gain = 0.5
-        [[ string description = "Amplitude multiplier per iteration." ]],
-    float advect = 0.5
-        [[ string description = "Both initial advection amount and advection multiplier per iteration." ]],
-    int octaves = 8
-        [[ string description = "Number of fractal iterations." ]],
-
-    float attenuation = 1.0
-        [[ string description = "The power of the falloff applied to the final result." ]],
-
-    output color result = 0.0
-) {
-    point objectPosition = transform("object", P);
-    point startPosition = start_frequency * objectPosition - start_offset;
-
-    float noiseValue = fractalPerlinFlowNoise3D(startPosition, flow, lacunarity, flow_rate, gain, advect, octaves);
+    float noiseValue = fractalPerlinFlowNoise3D(PP, Flow, Lacunarity, nRough, Advect, Octaves);
 
     noiseValue = 0.5 * noiseValue + 0.5;
-    noiseValue = pow(noiseValue, attenuation);
+    noiseValue = pow(noiseValue, Attenuation);
 
-    result = color(noiseValue);
+    ResultF = noiseValue;
 }
