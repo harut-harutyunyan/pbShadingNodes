@@ -151,7 +151,7 @@ float fractalPerlinFlowNoise3D(
     point position = p_pos;
     float noiseValue = 0;
     float flowValue = flow;
-    float flowRate = 1,
+    float flowRate = 1;
     float amplitude = 1;
     float advectionAmount = advect;
 
