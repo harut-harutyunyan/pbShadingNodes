@@ -1,0 +1,77 @@
+// layer up to 5 colors
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-04-01
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+float contrastFunc(float input, float contrast)
+    {
+        float otpt;
+        otpt = -(input*(1 + contrast))-(contrast/2);
+        return otpt;
+    }
+
+shader hLayerFloatHarut(
+    string BaseName = "",
+    float Base = 0,
+    // layer 1
+    int Layer1Enable = 0 [[ string widget = "boolean" ]],
+    string Layer1Name = "",
+    float Layer1 = 0,
+    float Layer1Mask = 1,
+    float Layer1MaskContrast = 0,
+    // layer 2
+    int Layer2Enable = 0 [[ string widget = "boolean" ]],
+    string Layer2Name = "",
+    float Layer2 = 0,
+    float Layer2Mask = 1,
+    float Layer2MaskContrast = 0,
+    // layer 3
+    int Layer3Enable = 0 [[ string widget = "boolean" ]],
+    string Layer3Name = "",
+    float Layer3 = 0,
+    float Layer3Mask = 1,
+    float Layer3MaskContrast = 0,
+    // layer 4
+    int Layer4Enable = 0 [[ string widget = "boolean" ]],
+    string Layer4Name = "",
+    float Layer4 = 0,
+    float Layer4Mask = 1,
+    float Layer4MaskContrast = 0,
+    // layer 5
+    int Layer5Enable = 0 [[ string widget = "boolean" ]],
+    string Layer5Name = "",
+    float Layer5 = 0,
+    float Layer5Mask = 1,
+    float Layer5MaskContrast = 0,
+
+    output float ResultF = 0,
+    )
+    {
+        ResultF = Base;
+        if (Layer1Enable)
+        {
+            float cont_mask = contrastFunc(Layer1Mask, Layer1MaskContrast);
+            ResultF = mix(ResultF, Layer1, cont_mask);
+        }
+        else if (Layer2Enable)
+        {
+            float cont_mask = contrastFunc(Layer2Mask, Layer2MaskContrast);
+            ResultF = mix(ResultF, Layer2, cont_mask);
+        }
+        else if (Layer3Enable)
+        {
+            float cont_mask = contrastFunc(Layer3Mask, Layer3MaskContrast);
+            ResultF = mix(ResultF, Layer3, cont_mask);
+        }
+        else if (Layer4Enable)
+        {
+            float cont_mask = contrastFunc(Layer4Mask, Layer4MaskContrast);
+            ResultF = mix(ResultF, Layer4, cont_mask);
+        }
+        else if (Layer5Enable)
+        {
+            float cont_mask = contrastFunc(Layer5Mask, Layer5MaskContrast);
+            ResultF = mix(ResultF, Layer5, cont_mask);
+        }
+    }
