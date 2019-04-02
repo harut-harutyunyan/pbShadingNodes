@@ -5,7 +5,7 @@
 // https://github.com/harut-harutyunyan/pbShadingNodes
 
 shader hColorLogic(
-    int Operation = 0 [[ string widget = "popup", string options = "A==B|A!=B|A<B|A>B|A<=B|A>=B" ]],
+    int Operation = 0 [[ string widget = "popup", string options = "A==B:0|A!=B:1|A<B:2|A>B:3|A<=B:4|A>=B:5" ]],
     float A = 1,
     float B = 1,
     output int Result = 0,

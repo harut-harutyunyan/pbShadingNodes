@@ -1,0 +1,64 @@
+// Create masks using ID pass.
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-03-18
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+#include "stdosl.h"
+
+float difference(color input, color pick, float tolerance)
+{
+    if (pick == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        color difference = 0;
+        float differenceF = 0;
+        difference=sqrt(pow((pick[0]-input[0]), 2)+pow((pick[1]-input[1]), 2)+pow((pick[2]-input[2]), 2));
+        differenceF = difference[0];
+        differenceF = (differenceF-0)/(tolerance-0);
+        differenceF = mix(0, 1, differenceF);
+        differenceF = 1-differenceF;
+        differenceF = clamp(differenceF, 0, 1);
+        return differenceF;
+    }
+
+}
+
+shader hIdMask(
+    color InputID = 0,
+    int Output = 0 [[ string widget = "mapper", string options = "Mask:0|ID:1|Disable:2" ]],
+    float Tolerance = 1,
+    color Pick1 = 0,
+    color Pick2 = 0,
+    color Pick3 = 0,
+    color Pick4 = 0,
+    output color Result = 0,
+    output float ResultF = 0,
+
+)
+
+{
+    float tol = Tolerance/10;
+    float mask1 = difference(InputID, Pick1, tol);
+    float mask2 = difference(InputID, Pick2, tol);
+    float mask3 = difference(InputID, Pick3, tol);
+    float mask4 = difference(InputID, Pick4, tol);
+    color masks_combined = mask1+mask2+mask3+mask4;
+    ResultF = masks_combined[0];
+
+    if (Output == 0)
+    {
+        Result = masks_combined;
+    }
+    else if (Output == 1)
+    {
+        Result = InputID;
+    }
+    else if (Output == 2)
+    {
+        Result = 0;
+    }
+}

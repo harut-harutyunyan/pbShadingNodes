@@ -1,0 +1,58 @@
+// merge A with B
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-03-18
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+#define over 0
+#define plus 1
+#define average 2
+#define multiply 3
+#define difference 4
+#define minus 5
+#define Xor 6
+
+shader hMerge(
+    int Operation = 0 [[ string widget = "mapper", string options = "over:0|plus:1|average:2|multiply:3|difference:4|minus:5|Xor:6" ]],
+    color A = 0,
+    float Alpha_A = 0,
+    color B = 0,
+    float Alpha_B = 0,
+    float Mask = 1,
+    output color Result = 0,
+)
+{
+    if (Operation == 0)
+    {
+        Result = A+B*(1-Alpha_A);
+    }
+    else if (Operation == 1)
+    {
+        Result = A+B;
+    }
+    else if (Operation == 2)
+    {
+        Result = (A+B)/2;
+    }
+    else if (Operation == 3)
+    {
+        Result = A*B;
+    }
+    else if (Operation == 4)
+    {
+        Result = abs(A-B);
+    }
+    else if (Operation == 5)
+    {
+        Result = A-B;
+    }
+    else if (Operation == 6)
+    {
+        Result = A*(1-Alpha_B)+B*(1-Alpha_A);
+    }
+    else
+    {
+        Result = 0;
+    }
+    Result = mix(B, Result, clamp(Mask, 0, 1));
+}

@@ -1,0 +1,32 @@
+// remap color to float value
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-03-18
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hColor2Float(
+    float R = 0,
+    float G = 0,
+    float B = 0,
+
+    int Output = 1 [[ string widget = "mapper", string options = "RGB:0|R:1|G:2|B:3" ]],
+    output color Result = 0,
+)
+{
+    if (Output == 0)
+    {
+        Result = color(R, G, B);
+    }
+    else if (Output == 1)
+    {
+        Result = R;
+    }
+    else if (Output == 2)
+    {
+        Result = G;
+    }
+    else if (Output == 3)
+    {
+        Result = B;
+    }
+}

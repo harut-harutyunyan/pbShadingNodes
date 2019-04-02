@@ -1,0 +1,26 @@
+// shuffle one or more channels to rgba.
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-03-18
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hShuffle(
+    color Input = 0,
+    int Isolate = 0 [[ string widget = "mapper", string options = "RGB:0|R:1|G:2|B:3" ]],
+    int Red = 0 [[ string widget = "mapper", string options = "R:0|G:1|B:2" ]],
+    int Green = 1 [[ string widget = "mapper", string options = "R:0|G:1|B:2" ]],
+    int Blue = 2 [[ string widget = "mapper", string options = "R:0|G:1|B:2" ]],
+    output color Result = 0,
+)
+{
+    if (Isolate==0)
+    {
+        Result[0] = Input[Red];
+        Result[1] = Input[Green];
+        Result[2] = Input[Blue];
+    }
+    else
+    {
+        Result = Input[Isolate-1];
+    }
+}

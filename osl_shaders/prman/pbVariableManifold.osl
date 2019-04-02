@@ -1,0 +1,33 @@
+// get coordinate space
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-03-18
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hVariableManifold(
+    int Variable = 0 [[ string widget = "mapper", string options = "P:0|UV:1|N:2" ]],
+    string Coordspace = "object" [[ string widget = "mapper", string options = "world:0|object:1|camera:2|screen:3|NDC:4" ]],
+    float Scale = 1,
+    vector Offset = 0,
+    float  Rotate = 0,
+
+    output point Result = P,
+)
+{
+    // get variable
+    if (Variable==0)
+    {
+        Result = transform(Coordspace, P);
+    }
+    else if (Variable==1)
+    {
+        point uv = point(u,v,0);
+        Result = transform(Coordspace, uv);
+    }
+    else if (Variable==2)
+    {
+        Result = transform(Coordspace, N);
+    }
+    vector rot_axis = vector(0,0,1);
+    Result = rotate(Result - Offset, radians(Rotate), rot_axis) / Scale;;
+}

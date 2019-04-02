@@ -1,0 +1,46 @@
+// a simple noise function. supports multiple noise types
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-03-19
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hNoise(
+    int NoiseType = 1 [[ string widget= "mapper", string options="perlin:0|uperlin:1|cell:2|hash:3|simplex:4|gabor:5" ]],
+    // float Frequency = 1,
+    int Octaves = 3,
+    float Lacunarity = 1.5,
+    float Gain = 1,
+    float Blackpoint = 0.2,
+    float Whitepoint = 0.8,
+    float Amplitude = 1,
+    point Scale = 1,
+    point Offset = 0,
+    point  Manifold = transform("object", P),
+    output float ResultF = 0,
+)
+{
+    // noise type
+    string nType = "uperlin";
+    if (NoiseType == 0) nType = "perlin"; else if (NoiseType == 1) nType = "uperlin"; else if (NoiseType == 2) nType = "cell";
+    else if (NoiseType == 3) nType = "hash"; else if (NoiseType == 4) nType = "simplex"; else if (NoiseType == 5) nType = "gabor";
+
+    point PP = Manifold/Scale-Offset;
+    float nSum = 0;
+    float nFreq = 1;
+    float nAmp = Amplitude;
+    // loop over octaves
+    for (int i = 0; i < Octaves; i++)
+    {
+        // Compute a noise value
+        float ns = noise(nType, PP * nFreq, i);
+        ns = smoothstep(Blackpoint, Whitepoint, ns);
+        // Add our result to the output
+        ResultF += ns * nAmp;
+        // Add the amplitude to the normalizing sum
+        nSum += nAmp;
+        // Step up frequency and amplitude
+        nFreq *= Lacunarity;
+        nAmp *= Gain;
+    }
+    ResultF /= nSum / Amplitude;
+}

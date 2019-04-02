@@ -1,0 +1,109 @@
+// layer up to 5 colors
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-03-22
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+color mergeOp(color A, color B, int operation)
+{
+    color merged;
+        if (operation == 0)
+    {
+        merged = A+B*(1-1);
+    }
+    else if (operation == 1)
+    {
+        merged = A+B;
+    }
+    else if (operation == 2)
+    {
+        merged = (A+B)/2;
+    }
+    else if (operation == 3)
+    {
+        merged = A*B;
+    }
+    else if (operation == 4)
+    {
+        merged = abs(A-B);
+    }
+    else if (operation == 5)
+    {
+        merged = A-B;
+    }
+    return merged;
+}
+
+color layerCol(color layer, color base, int op, float mask)
+{
+    color layered = base;
+    color merged = mergeOp(layer, layered, op);
+    layered = mix(layered, merged, mask);
+    return layered;
+}
+
+shader hLayerColor(
+    string BaseName = "",
+    color Base = 0,
+    // layer 1
+    int Layer1Enable = 0 [[ string widget = "boolean" ]],
+    string Layer1Name = "",
+    int Layer1Merge = 0 [[ string widget = "mapper", string options = "over:0|plus:1|average:2|multiply:3|difference:4|minus:5" ]],
+    color Layer1 = 0,
+    float Layer1Mix = 1,
+    // layer 2
+    int Layer2Enable = 0 [[ string widget = "boolean" ]],
+    string Layer2Name = "",
+    int Layer2Merge = 0 [[ string widget = "mapper", string options = "over:0|plus:1|average:2|multiply:3|difference:4|minus:5" ]],
+    color Layer2 = 0,
+    float Layer2Mix = 1,
+    // layer 3
+    int Layer3Enable = 0 [[ string widget = "boolean" ]],
+    string Layer3Name = "",
+    int Layer3Merge = 0 [[ string widget = "mapper", string options = "over:0|plus:1|average:2|multiply:3|difference:4|minus:5" ]],
+    color Layer3 = 0,
+    float Layer3Mix = 1,
+    // layer 4
+    int Layer4Enable = 0 [[ string widget = "boolean" ]],
+    string Layer4Name = "",
+    int Layer4Merge = 0 [[ string widget = "mapper", string options = "over:0|plus:1|average:2|multiply:3|difference:4|minus:5" ]],
+    color Layer4 = 0,
+    float Layer4Mix = 1,
+    // layer 5
+    int Layer5Enable = 0 [[ string widget = "boolean" ]],
+    string Layer5Name = "",
+    int Layer5Merge = 0 [[ string widget = "mapper", string options = "over:0|plus:1|average:2|multiply:3|difference:4|minus:5" ]],
+    color Layer5 = 0,
+    float Layer5Mix = 1,
+    // result
+    output color Result = 0,
+
+)
+{
+    // layer 1
+    Result = Base;
+    if (Layer1Enable)
+    {
+        Result = layerCol(Layer1, Result, Layer1Merge, Layer1Mix);
+    }
+    // layer 2
+    if (Layer2Enable)
+    {
+        Result = layerCol(Layer2, Result, Layer2Merge, Layer2Mix);
+    }
+    // layer 3
+    if (Layer3Enable)
+    {
+        Result = layerCol(Layer3, Result, Layer3Merge, Layer3Mix);
+    }
+    // layer 4
+    if (Layer4Enable)
+    {
+        Result = layerCol(Layer4, Result, Layer4Merge, Layer4Mix);
+    }
+    // layer 5
+    if (Layer5Enable)
+    {
+        Result = layerCol(Layer5, Result, Layer5Merge, Layer5Mix);
+    }
+}
