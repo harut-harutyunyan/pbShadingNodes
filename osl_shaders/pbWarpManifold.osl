@@ -1,0 +1,28 @@
+// warp input manifold
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-05-02
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hWarpManifold(
+    point Manifold = point(u, v, 0),
+    float Intensity = 0.5,
+    float NoiseScale = 1,
+    int NoiseOctaves = 1,
+    int UseWarpMap = 1 [[ string widget = "boolean" ]],
+    color WarpMap = 0,
+    output point Result = 0,
+)
+{
+    color warper = WarpMap;
+    if (UseWarpMap == 0){
+        point noise_pos = transform("object", P)/NoiseScale;
+        for (int i = 0; i < NoiseOctaves; i++){
+            warper = noise(noise_pos, i);
+            noise_pos *= 1.85;
+        }
+    }
+    color w_amount = 0;
+    w_amount = warper*Intensity;
+    Result = point(Manifold[0]+w_amount[0], Manifold[1]+w_amount[1], Manifold[2]+w_amount[2]);
+}

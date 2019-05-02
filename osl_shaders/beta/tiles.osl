@@ -1,0 +1,60 @@
+// mix to colors with a mask.
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-04-25
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+float rand(float n){
+    return sin(n) * 43758.5453123 - floor(sin(n) * 43758.5453123);
+}
+
+shader hShaderName(
+    float tile = 4,
+    int seed = 0,
+    int iterations = 10,
+    float rotation = 0,
+    output color Result = 0,
+)
+{
+    point uv = point(u, v, 0)*tile;
+    string tex_path1 = "D:\\OTV\\Loc\\Hangar\\textures\\floor\\tiles_basecolor_01.exr";
+    color tex1 = texture(tex_path1, uv[0], uv[1],"wrap", "periodic");
+    string tex_path2 = "D:\\OTV\\Loc\\Hangar\\textures\\floor\\tiles_basecolor_02.exr";
+    color tex2 = texture(tex_path2, uv[0], uv[1],"wrap", "periodic");
+    string tex_path3 = "D:\\OTV\\Loc\\Hangar\\textures\\floor\\tiles_basecolor_03.exr";
+    color tex3 = texture(tex_path3, uv[0], uv[1],"wrap", "periodic");
+    string tex_path4 = "D:\\OTV\\Loc\\Hangar\\textures\\floor\\tiles_basecolor_04.exr";
+    color tex4 = texture(tex_path4, uv[0], uv[1],"wrap", "periodic");
+
+    string tex_path5 = "F:\\SHARING\\osl\\creative-temp-.jpg";
+
+    float t_mix = 0;
+    for (int i = 0; i < iterations; i++)
+    {
+    uv = rotate(uv, radians(rotation*i), point(0,0,0), point(0,0,1));
+    float test_num = rand(i);
+    color txt = 0;
+    uv[0] = uv[0]+seed;
+    uv[1] = uv[1]+seed;
+    if (test_num > 0.5)
+    {
+        txt = texture(tex_path1, uv[0], uv[1],"wrap", "periodic");
+    }
+    else if (test_num > 0.7)
+    {
+        txt = texture(tex_path2, uv[0], uv[1],"wrap", "periodic");
+    }
+    else if (test_num > 0.3)
+    {
+        txt = texture(tex_path3, uv[0], uv[1],"wrap", "periodic");
+    }
+    else
+    {
+        txt = texture(tex_path4, uv[0], uv[1],"wrap", "periodic");
+    }
+    t_mix = float(noise("cell", uv-i*5));
+    t_mix = clamp((t_mix-0.88)/(0.882-0.88), 0, 1);
+    Result = mix(Result, txt, t_mix);
+    }
+    // Result  = color(hsv, 1, .9, .9);
+}

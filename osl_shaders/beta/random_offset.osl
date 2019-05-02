@@ -1,0 +1,38 @@
+// mix to colors with a mask.
+// pbIdMask.osl, by Harut Harutyunyan
+// Modified: 2019-04-25
+// gumroad.com/pixelbucket
+// https://github.com/harut-harutyunyan/pbShadingNodes
+
+shader hShaderName(
+    float tile = 2,
+    int rowCount = 2,
+    point Offset =0,
+    float offsetu = 0.333,
+    float offsetv = 0.5,
+    float rotation =180,
+    output color Result = 0,
+)
+{
+    point uv = point(u, v, 0)*tile;
+    int row = int(floor(uv[1]));
+    int modrow = row % rowCount;
+    int col = int(floor(uv[0]));
+    int modcol = col % rowCount;
+    uv[0] = uv[0]+modrow*offsetu;
+    uv[1] = uv[1]+modcol*offsetv;
+
+    point rot_uv = rotate(uv, radians(rotation), point(0,0,0), point(0,0,1));
+
+    string tex_path = "D:\\OTV\\Loc\\Hangar\\textures\\floor\\tiles_basecolor_01.exr";
+    string tex_path1 = "D:\\OTV\\Loc\\Hangar\\textures\\floor\\tiles_basecolor_02.exr";
+    string tex_path2 = "D:\\OTV\\Loc\\Hangar\\textures\\floor\\tiles_basecolor_03.exr";
+    string tex_path3 = "D:\\OTV\\Loc\\Hangar\\textures\\floor\\tiles_basecolor_04.exr";
+
+    color tex = texture(tex_path, uv[0], uv[1],"wrap", "periodic");
+    color tex1 = texture(tex_path1, rot_uv[0], rot_uv[1],"wrap", "periodic");
+    color tex2 = texture(tex_path3, 1-rot_uv[0], 1-uv[1],"wrap", "periodic");
+
+    Result = mix(tex, tex1, float(clamp(modrow, 0, 1)));
+    Result = mix(Result, tex2, float(clamp(modcol, 0, 1)));
+}
