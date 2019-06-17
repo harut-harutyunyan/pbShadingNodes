@@ -1,0 +1,24 @@
+shader hShaderName(
+    point UV = point(u,v,0),
+    point Center = point(0.5, 0.5, 0),
+    point LL = point(0.2, 0.2, 0),
+    point UR = point(0.7, 0.7, 0),
+    float Radius = 0.3,
+    float Feather = 0.05,
+    float distMult = 1,
+    int count = 2,
+    color A = color(0.5, 0.2, 0.4),
+    color B = color(0, 0.25, 1),
+    float Scale = 1,
+    output color Result = 0,
+)
+{
+    pnt = UV/Scale;
+    float f = 0;
+    point dist = point(distance(pnt, LL), distance(pnt, UR), 0);
+
+    if (dist[0] > LL[0] && dist[0] < UR[0] && dist[1] > LL[1] && dist[1] < UR[1]) f = 1;
+
+    Result = mix(A, B, clamp(f, 0, 1));
+    // Result = f;
+}
