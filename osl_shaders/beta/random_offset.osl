@@ -2,7 +2,6 @@
 // pbIdMask.osl, by Harut Harutyunyan
 // Modified: 2019-04-25
 // gumroad.com/pixelbucket
-// https://github.com/harut-harutyunyan/pbShadingNodes
 
 shader hShaderName(
     float tile = 2,

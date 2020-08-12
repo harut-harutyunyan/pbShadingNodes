@@ -2,7 +2,7 @@
 // pbIdMask.osl, by Harut Harutyunyan
 // Modified: 2019-03-18
 // gumroad.com/pixelbucket
-// https://github.com/harut-harutyunyan/pbShadingNodes
+
 
 shader hShuffle(
     color Input = 0,

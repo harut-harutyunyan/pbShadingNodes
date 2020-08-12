@@ -1,63 +1,19 @@
 // position mask
-// pbIdMask.osl, by Harut Harutyunyan
+// hPMask.osl, by Harut Harutyunyan
 // Modified: 2019-03-18
 // gumroad.com/pixelbucket
-// https://github.com/harut-harutyunyan/pbShadingNodes
 
 shader hPMask(
-  int Mode = 0 [[ string widget = "popup", string options = "position|matrix|rings|rays" ]],
-  point Position = 0,
-  point Scale = 1,
+  point Position1 = 0,
+  point Scale1 = 1,
+
   float Gamma = 1 [[ float min = 0, float max = 1 ]],
-  int FalloffType = 1 [[ string widget = "popup", string options = "none|smooth|quadratic" ]],
-  float Falloff = 1,
   point Manifold = transform("world", P),
-  matrix Matrix = matrix(1),
-  output float ResultF = 0,
+  output color Result = 0,
 )
 {
-  float XPos = (Manifold[0]-Position[0])/(Scale[0]+0.0001);
-  float YPos = (Manifold[1]-Position[1])/(Scale[1]+0.0001);
-  float ZPos = (Manifold[2]-Position[2])/(Scale[2]+0.0001);
-  // distance
-  if (Mode == 0)
-  {
-    // point
-    ResultF = 1-sqrt(pow(XPos, 2)+pow(ZPos, 2)+pow(YPos, 2));
-  }
-  else if (Mode == 1)
-  {
-    // matrix
-    point Pm = transform(1/Matrix, P);
-    vector bb = 1;
-    ResultF = 1-(length(max(abs(Pm) - bb, 0)));
-  }
-  else if (Mode == 2)
-  {
-    // circles
-    ResultF = sin(1-sqrt(pow(XPos, 2)+pow(ZPos, 2)+pow(YPos, 2))*5);
-  }
-  else if (Mode == 3)
-  {
-    // rays
-    ResultF = sin(atan2(XPos, ZPos)/(Scale[0]/20+0.0001));
-  }
-  // gamma
-  ResultF = pow(ResultF, 1/Gamma);
-  // fallof
-  ResultF = ResultF/max(Falloff, 0)+0.001;
-  if (FalloffType == 0)
-  {
-    ResultF = ResultF/0.001;
-  }
-  else if (FalloffType == 1)
-  {
-    ResultF = smoothstep(0, 1, ResultF);
-  }
-  else if (FalloffType == 2)
-  {
-    ResultF = clamp(pow(ResultF, 3), 0, 1);
-  }
-  //clamp
-  ResultF = clamp(ResultF, 0, 1);
+    // point PP = (Manifold-Position1)/(Scale1+0.0001);
+    Result = distance(Manifold/Scale1, Position1);
+    // Result = 0;
+    Result = clamp(Result, 0, 1);
 }

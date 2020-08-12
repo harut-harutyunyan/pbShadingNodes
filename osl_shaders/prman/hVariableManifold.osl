@@ -2,7 +2,6 @@
 // pbIdMask.osl, by Harut Harutyunyan
 // Modified: 2019-03-18
 // gumroad.com/pixelbucket
-// https://github.com/harut-harutyunyan/pbShadingNodes
 
 shader hVariableManifold(
     int Variable = 0 [[ string widget = "mapper", string options = "P:0|UV:1|N:2" ]],

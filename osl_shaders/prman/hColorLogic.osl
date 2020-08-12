@@ -2,7 +2,7 @@
 // pbIdMask.osl, by Harut Harutyunyan
 // Modified: 2019-03-18
 // gumroad.com/pixelbucket
-// https://github.com/harut-harutyunyan/pbShadingNodes
+
 
 shader hColorLogic(
     int Operation = 0 [[ string widget = "mapper", string options = "A==B:0|A!=B:1|A<B:2|A>B:3|A<=B:4|A>=B:5" ]],

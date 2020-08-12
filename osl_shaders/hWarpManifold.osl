@@ -2,7 +2,7 @@
 // pbIdMask.osl, by Harut Harutyunyan
 // Modified: 2019-05-02
 // gumroad.com/pixelbucket
-// https://github.com/harut-harutyunyan/pbShadingNodes
+
 
 shader hWarpManifold(
     point Manifold = point(u, v, 0),

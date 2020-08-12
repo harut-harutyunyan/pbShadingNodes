@@ -1,14 +1,14 @@
 // position mask
-// pbIdMask.osl, by Harut Harutyunyan
+// hPosition.osl, by Harut Harutyunyan
 // Modified: 2019-03-18
 // gumroad.com/pixelbucket
 
-shader hPMask(
-  int Mode = 0 [[ string widget = "mapper", string options = "position:0|matrix:1|rings:2|rays:3" ]],
+shader hPosition(
+  int Mode = 0 [[ string widget = "popup", string options = "position|matrix|rings|rays" ]],
   point Position = 0,
   point Scale = 1,
   float Gamma = 1 [[ float min = 0, float max = 1 ]],
-  int FalloffType = 1 [[ string widget = "mapper", string options = "none:0|smooth:1|quadratic:2" ]],
+  int FalloffType = 1 [[ string widget = "popup", string options = "none|smooth|quadratic" ]],
   float Falloff = 1,
   point Manifold = transform("world", P),
   matrix Matrix = matrix(1),

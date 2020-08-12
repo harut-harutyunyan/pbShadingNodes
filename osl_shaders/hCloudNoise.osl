@@ -2,7 +2,6 @@
 // pbAligatorNoise.osl, by Harut Harutyunyan
 // Modified: 2019-03-19
 // gumroad.com/pixelbucket
-// https://github.com/harut-harutyunyan/pbShadingNodes
 
 float alligatorNoise3D(point point_pos)
     {

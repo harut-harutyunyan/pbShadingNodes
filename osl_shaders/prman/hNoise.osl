@@ -2,7 +2,6 @@
 // pbIdMask.osl, by Harut Harutyunyan
 // Modified: 2019-03-19
 // gumroad.com/pixelbucket
-// https://github.com/harut-harutyunyan/pbShadingNodes
 
 shader hNoise(
     int NoiseType = 1 [[ string widget= "mapper", string options="perlin:0|uperlin:1|cell:2|hash:3|simplex:4|gabor:5" ]],
