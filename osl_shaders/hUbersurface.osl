@@ -1,38 +1,7 @@
-// Copyright Contributors to the Open Shading Language project.
-// SPDX-License-Identifier: BSD-3-Clause
-// https://github.com/imageworks/OpenShadingLanguage
-//
-// ubersurface.osl
-//
-//
-// A demonstration of writing a production-like generalized surface shader in OSL
-// This shader combines diffuse, specular, refractive and emissive closure to create
-// a flexible material description.
-//
-// See the help metadata on the parameters for usage info.  Hopefully much of it is
-// self-explanatory.
-//
-// Author: Adam S. Martinez
-// Date: August 5th, 2011
-// Soundtrack: Gojira - Flying Whales
-//
-// August 2013:
-// This update employs a simple material layering mechanism that allows
-// two ubersurface shaders to connect and composite in a consistent manner.
-// Connecting ubersurfaceB.Out_Ci to ubersurfaceA.Next_Layer results in
-// the appearance of ubersurfaceA over ubersurfaceB.
-//
-// In this logic, opacity of 0 will pass through the top layer and call the
-// Next_Layer.  Refractive materials will filter Next_Layer according to
-// the Refraction_Color.
-//
-// See testsuite/render-material-layer for an example.
-//
-// Note:  This shader uses the "absorption" closure keyword for
-// the microfacet_beckmann_refraction closure.  This is currently
-// unsupported by the testrender application.
-//
-
+// Ubershader that has features such as radiance closures and BSDFs.
+// hUbersurface.osl.osl, by Harut Harutyunyan
+// Modified: 2019-06-18
+// gumroad.com/pixelbucket
 
 // The TEXTURE_PARAMS macro defines a set of parameters common to all texture maps.
 // The metadata provides paramater display hints to host applications. These metadata
